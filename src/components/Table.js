@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { useRef } from "react";
 function Tables() {
 	const { cricket, loading } = useGlobalContext();
 	const scard = { w: 0, l: 0, pts: 0, m: 0 };
@@ -19,35 +20,49 @@ function Tables() {
 	for (let i = 0; i < 10; i++) {
 		d[team[i]] = { ...scard, st: [] };
 	}
+	const ref = useRef(null);
+	// const scroll = () => {
+	// 	ref.scrollX += 20;
+	// };
+	const scroll = (scrollOffset) => {
+		ref.current.scrollLeft += scrollOffset;
+	};
+
 	// console.log(cricket[0])
 	for (let i = 0; i < cricket.length; i++) {
 		if (cricket[i].winner !== null) {
 			d[cricket[i].winner]["w"] = d[cricket[i].winner]["w"] + 1;
-			if (d[cricket[i].winner].st.length <= 5) {
-				d[cricket[i].winner].st.push(<CheckCircleIcon color='success' />);
-			}
+			// if (d[cricket[i].winner].st.length <= 5) {
+			d[cricket[i].winner].st.push(<CheckCircleIcon color='success' />);
+			// }
 			d[cricket[i].winner].m += 1;
 			if (cricket[i].winner === cricket[i].team1) {
 				d[cricket[i].team2].l += 1;
-				if (d[cricket[i].winner].st.length <= 5) {
-					// d[cricket[i].winner].st.push(<CheckCircleIcon color="success" />);
-					d[cricket[i].team2].st.push(<RemoveCircleIcon color='error' />);
-				}
+				// if (d[cricket[i].winner].st.length <= 5) {
+				// d[cricket[i].winner].st.push(<CheckCircleIcon color="success" />);
+				d[cricket[i].team2].st.push(<RemoveCircleIcon color='error' />);
+				// }
 				d[cricket[i].team2].m += 1;
 			} else {
 				d[cricket[i].team1].l += 1;
-				if (d[cricket[i].winner].st.length <= 5) {
-					d[cricket[i].team1].st.push(<RemoveCircleIcon color='error' />);
-				}
+				// if (d[cricket[i].winner].st.length <= 5) {
+				d[cricket[i].team1].st.push(<RemoveCircleIcon color='error' />);
+				// }
 				d[cricket[i].team1].m += 1;
 			}
 		}
 	}
-	for (let i = 0; i < cricket.length; i++) {
-		if (cricket[i].winner !== null) {
-			d[cricket[i].winner].st.splice(0, d[cricket[i].winner].st.length - 5);
-		}
-	}
+	// for (let i = 0; i < cricket.length; i++) {
+	// 	if (cricket[i].winner !== null) {
+	// 		d[cricket[i].winner].st.splice(0, d[cricket[i].winner].st.length - 5);
+	// 	}
+	// }
+
+	for (let i = 0; i < team.length; i++)
+		d[team[i]].st = d[team[i]].st.slice(0, 5);
+
+	// let sorted = {};
+	// Object.keys(d);
 
 	// })
 	for (let i = 0; i < 10; i++) {
@@ -98,7 +113,16 @@ function Tables() {
 
 	return (
 		<>
-			<TableContainer m100 responsive='lg' component={Paper}>
+			<div style={{ display: "flex" }}>
+				<button onClick={() => scroll(-20)}>LEFT</button>
+				<button onClick={() => scroll(20)}>RIGHT</button>
+			</div>
+			<TableContainer
+				m100
+				responsive='lg'
+				component={Paper}
+				ref={ref}
+				style={{ scrollBehavior: "smooth" }}>
 				<Table sx={{ minWidth: 600 }} aria-label='customized table'>
 					<TableHead>
 						<TableRow>

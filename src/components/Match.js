@@ -1,5 +1,5 @@
 import React from "react";
-export default function Cocktail({ id, date, team1, team2, winner }) {
+export default function Match({ id, date, team1, team2, winner }) {
 	return (
 		<>
 			<div className='match'>
